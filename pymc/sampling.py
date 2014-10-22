@@ -8,7 +8,7 @@ from . import step_methods
 from .progressbar import progress_bar
 from numpy.random import seed
 
-__all__ = ['sample', 'iter_sample']
+__all__ = ['sample', 'iter_sample', 'iter_sample_multi']
 
 
 def sample(draws, step, start=None, trace=None, chain=0, njobs=1, tune=None,
@@ -145,6 +145,14 @@ def iter_sample(draws, step, start=None, trace=None, chain=0, tune=None,
                             model, random_seed)
     for i, trace in enumerate(sampling):
         yield trace[:i + 1]
+
+
+def iter_sample_multi(draws, step, start=None, trace=None, chain=0, tune=None,
+                      model=None, random_seed=None):
+    sampling = _iter_sample(draws, step, start, trace, chain, tune,
+                            model, random_seed)
+    for i, trace in enumerate(sampling):
+        yield MultiTrace([trace[:i + 1]])
 
 
 def _iter_sample(draws, step, start=None, trace=None, chain=0, tune=None,
